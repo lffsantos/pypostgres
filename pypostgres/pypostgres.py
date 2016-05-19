@@ -13,13 +13,22 @@ def fix_int64(data):
 
 class Connection():
 
-    def __init__(self, db, user):
-        self.db = db
-        self.user = user
+    def __init__(self, database, user, password=None, host='localhost', port=5432):
+        self.config = {
+            "dbname": database,
+            "user": user,
+            "password": password,
+            "host": host,
+            "port": port
+        }
 
     def __enter__(self, *args):
-        self.conn = pg.connect(
-            "dbname={} user={}".format(self.db, self.user))
+        dsn = ("dbname={dbname} "
+            "user={user} " 
+            "password={password} " 
+            "host={host} " 
+            "port={port}").format_map(self.config)
+        self.conn = pg.connect(dsn)
         self.cursor = self.conn.cursor()
         return self.cursor
 
@@ -31,18 +40,23 @@ class Connection():
 
 class Postgres():
 
-    def __init__(self, db, user='postgres'):
-        self.db = db
-        self.user = user
+    def __init__(self, database, user, password=None, host='localhost', port=5432):
+        self.config = {
+            "dbname": database,
+            "user": user,
+            "password": password,
+            "host": host,
+            "port": port
+        }
 
     def query(self, query, insertion=None, mode=['read', 'write']):
-        with Connection(self.db, self.user) as cursor:
+        with Connection(**self.config) as cursor:
             cursor.execute(query, insertion)
             if mode == 'read':
                 return cursor.fetchall()
         return
 
-    def to_dataframe(self, columns, table):
+    def to_dataframe(self, columns, table, conditions=None):
         df = pd.DataFrame(columns=columns)
         columns = ', '.join(df.columns)
 

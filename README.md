@@ -13,7 +13,8 @@ pip install pypostgres
 >>> from pypostgres import Postgres
 
 # Database connection
->>> db = Postgres('dbname', 'user')
+# Params: database, user, password=None, host='localhost', port=5432
+>>> db = Postgres('dbname', 'user',)
 
 # Execute query
 >>> db.query('SELECT * FROM dbname;', mode='read')
