@@ -41,7 +41,11 @@ class Postgres():
     def to_dataframe(self, columns, table):
         df = pd.DataFrame(columns=columns)
         columns = ', '.join(df.columns)
-        result = self.read("SELECT {} FROM {};".format(columns, table))
+        if conditions:
+            result = self.read("SELECT {} FROM {} WHERE {};".format(
+                columns, table, conditions))
+        else:
+            result = self.read("SELECT {} FROM {};".format(columns, table))
         for index, items in enumerate(result):
             df.loc[index] = items
         return df
