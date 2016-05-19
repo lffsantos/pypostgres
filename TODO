@@ -1,7 +1,9 @@
 # feature request  vs tasks to do
  ✔ basic setup of the repository tree @done (16-05-18 23:29)
+ ✔ usable & stable version @done (16-05-19 15:49)
  ☐ add tests
  ☐ setup CI configuration with travis
  ☐ allow coverage report
  ☐ write the docstrings for all functions
  ☐ write a properly readme.md with gifs showing the basic usage
+ ☐ add error treatment for all functions
