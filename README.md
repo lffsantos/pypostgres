@@ -4,6 +4,8 @@
 pip install pypostgres
 ```
 
+*Not tested in python 2.x*
+
 # Usage
 
 ```python
