@@ -1,0 +1,17 @@
+approve_by_comment: true
+approve_regex: '^(Approved|:\+1:)'
+reject_regex: '^(Rejected|:\-1:)'
+reject_value: -1
+reset_on_push: true
+reset_on_reopened: true
+author_approval: required
+reviewers:
+    -
+        name: admins
+        required: 2
+        members:
+            - marcelluzs
+            - ryukinix
+        conditions:
+            branches:
+                - master
