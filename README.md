@@ -1,4 +1,5 @@
 # Installation
+[![Build Status](https://travis-ci.org/marcelluzs/pypostgres.svg?branch=master)](https://travis-ci.org/marcelluzs/pypostgres)
 
 ```
 pip install pypostgres
