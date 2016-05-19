@@ -1,41 +1,11 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import psycopg2 as pg
 import pandas as pd
 from itertools import repeat
-import numpy as np
 
-
-def fix_int64(data):
-    return (data if not isinstance(data, np.int64) else int(data))
-
-
-class Connection():
-
-    def __init__(self, database, user, password=None, host='localhost', port=5432):
-        self.config = {
-            "dbname": database,
-            "user": user,
-            "password": password,
-            "host": host,
-            "port": port
-        }
-
-    def __enter__(self, *args):
-        dsn = ("dbname={dbname} "
-            "user={user} " 
-            "password={password} " 
-            "host={host} " 
-            "port={port}").format_map(self.config)
-        self.conn = pg.connect(dsn)
-        self.cursor = self.conn.cursor()
-        return self.cursor
-
-    def __exit__(self, *args):
-        self.conn.commit()
-        self.cursor.close()
-        self.conn.close()
+from connection import Connection
+from utils import fix_int64
 
 
 class Postgres():
