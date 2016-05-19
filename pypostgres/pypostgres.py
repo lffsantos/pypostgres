@@ -29,23 +29,24 @@ class Postgres():
         self.db = db
         self.user = user
 
-    def read(self, query):
-        with Connection(self.db, self.user) as cursor:
-            cursor.execute(query)
-            return cursor.fetchall()
-
-    def write(self, query, insertion=None):
+    def query(self, query, insertion=None, mode=['read', 'write']):
         with Connection(self.db, self.user) as cursor:
             cursor.execute(query, insertion)
+            if mode == 'read':
+                return cursor.fetchall()
+        return
 
     def to_dataframe(self, columns, table):
         df = pd.DataFrame(columns=columns)
         columns = ', '.join(df.columns)
+
         if conditions:
-            result = self.read("SELECT {} FROM {} WHERE {};".format(
-                columns, table, conditions))
+            query = "SELECT {} FROM {} WHERE {};".format(
+                columns, table, conditions)
         else:
-            result = self.read("SELECT {} FROM {};".format(columns, table))
+            query = "SELECT {} FROM {};".format(columns, table)
+            
+        result = self.query(query, mode='read')
         for index, items in enumerate(result):
             df.loc[index] = items
         return df
