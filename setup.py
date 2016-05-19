@@ -33,7 +33,7 @@ with open('requirements.txt') as f:
 setup(
     name=pypostgres.__name__,
     version=pypostgres.__version__,
-    description="A useful collection of decorators (focused in animation)",
+    description="A psycopg2 wrapper using pandas DataFrame to I/O",
     long_description=long_description,
     classifiers=[
         "Environment :: Console",
