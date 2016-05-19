@@ -3,6 +3,12 @@
 
 import psycopg2 as pg
 import pandas as pd
+from itertools import repeat
+import numpy as np
+
+
+def fix_int64(data):
+    return (data if not isinstance(data, np.int64) else int(data))
 
 
 class Connection():
@@ -45,7 +51,7 @@ class Postgres():
                 columns, table, conditions)
         else:
             query = "SELECT {} FROM {};".format(columns, table)
-            
+
         result = self.query(query, mode='read')
         for index, items in enumerate(result):
             df.loc[index] = items
@@ -57,4 +63,7 @@ class Postgres():
         query = "INSERT INTO {} ({}) VALUES ({})".format(
             table, columns, placeholder)
         for row in df.itertuples():
-            self.write(query, insertion=row)
+            # Numpy.int64 is not supported by psycopg2 type conversion
+            # row first element is the DataFrame index
+            values = [fix_int64(el) for el in row[1:]]
+            self.query(query, values, mode='write')
