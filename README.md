@@ -7,7 +7,7 @@ pip install pypostgres
 # Usage
 
 ```python
->>> from postgres import Postgres
+>>> from pypostgres import Postgres
 
 # Database connection
 >>> db = Postgres('dbname', 'user')
