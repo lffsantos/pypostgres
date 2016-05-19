@@ -45,3 +45,11 @@ class Postgres():
         for index, items in enumerate(result):
             df.loc[index] = items
         return df
+
+    def from_dataframe(self, df, table):
+        columns = ', '.join(df.columns)
+        placeholder = ', '.join(repeat('%s', len(df.columns)))
+        query = "INSERT INTO {} ({}) VALUES ({})".format(
+            table, columns, placeholder)
+        for row in df.itertuples():
+            self.write(query, insertion=row)
