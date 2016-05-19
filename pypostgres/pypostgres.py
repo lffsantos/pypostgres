@@ -1,6 +1,8 @@
+#!/usr/bin/env python
+# coding=utf-8
+
 import psycopg2 as pg
 import pandas as pd
-from itertools import repeat
 
 
 class Connection():
