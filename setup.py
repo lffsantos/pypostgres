@@ -33,7 +33,8 @@ with open('requirements.txt') as f:
 setup(
     name=pypostgres.__name__,
     version=pypostgres.__version__,
-    description="A psycopg2 wrapper using pandas DataFrame to I/O",
+    description=("A psycopg2 wrapper using pandas DataFrame "
+                 "to perform CRUD operations with PostgreSQL"),
     long_description=long_description,
     classifiers=[
         "Environment :: Console",
@@ -47,7 +48,7 @@ setup(
         "Programming Language :: Python :: 3.5",
     ],
     # Get strings from http://pypi.python.org/pypi?%3Aaction=list_classifiers
-    keywords='pypostgres postgres wrapper pandas',
+    keywords='pypostgres postgres wrapper pandas dataframe psycopg2 database',
     author=pypostgres.__author__,
     author_email=pypostgres.__email__,
     url=pypostgres.__url__,
