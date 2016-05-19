@@ -38,7 +38,7 @@ class Postgres():
         with Connection(self.db, self.user) as cursor:
             cursor.execute(query, insertion)
 
-    def to_dataframe(self, columns, table, conditions=None):
+    def to_dataframe(self, columns, table):
         df = pd.DataFrame(columns=columns)
         columns = ', '.join(df.columns)
         result = self.read("SELECT {} FROM {};".format(columns, table))
