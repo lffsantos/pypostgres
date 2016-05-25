@@ -26,7 +26,7 @@ class Connection():
         try:
             self.conn.commit()
         except:
-            session.rollback()
+            self.conn.rollback()
             raise
         finally:
             self.cursor.close()
