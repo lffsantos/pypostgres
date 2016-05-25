@@ -23,6 +23,11 @@ class Connection():
         return self.cursor
 
     def __exit__(self, *args):
-        self.conn.commit()
-        self.cursor.close()
-        self.conn.close()
+        try:
+            self.conn.commit()
+        except:
+            session.rollback()
+            raise
+        finally:
+            self.cursor.close()
+            self.conn.close()
