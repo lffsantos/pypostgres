@@ -10,17 +10,11 @@ from utils import fix_int64
 
 class Postgres():
 
-    def __init__(self, database, user, password=None, host='localhost', port=5432):
-        self.config = {
-            "dbname": database,
-            "user": user,
-            "password": password,
-            "host": host,
-            "port": port
-        }
+    def __init__(self):
+        pass
 
     def query(self, query, insertion=None, mode=['read', 'write']):
-        with Connection(**self.config) as cursor:
+        with Connection() as cursor:
             cursor.execute(query, insertion)
             if mode == 'read':
                 return cursor.fetchall()
