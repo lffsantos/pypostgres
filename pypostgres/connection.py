@@ -1,24 +1,14 @@
 import psycopg2 as pg
+import settings
 
 
 class Connection():
 
-    def __init__(self, database, user, password=None, host='localhost', port=5432):
-        self.config = {
-            "dbname": database,
-            "user": user,
-            "password": password,
-            "host": host,
-            "port": port
-        }
+    def __init__(self):
+        pass
 
     def __enter__(self, *args):
-        dsn = ("dbname={dbname} "
-            "user={user} " 
-            "password={password} " 
-            "host={host} " 
-            "port={port}").format_map(self.config)
-        self.conn = pg.connect(dsn)
+        self.conn = pg.connect(**settings.DATABASE)
         self.cursor = self.conn.cursor()
         return self.cursor
 
