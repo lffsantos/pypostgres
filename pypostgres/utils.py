@@ -6,5 +6,7 @@ def fix_int64(data):
 
 
 def untuple(list_of_tuples, index=0):
+    result = []
     for t in list_of_tuples:
-        yield t[index]
+        result.append(t[index])
+    return result
