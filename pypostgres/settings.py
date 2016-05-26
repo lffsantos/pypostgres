@@ -4,5 +4,4 @@ DATABASE = {
     'database': 'postgres',
     'username': 'user',
     'password': '',
-    'database': 'user'
 }
