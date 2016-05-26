@@ -36,7 +36,13 @@ class Postgres():
             df.loc[index] = items
         return df
 
-    def to_dataframe(self, table, columns=['all', list()], conditions=None):
+    def to_dataframe(self, table, columns='all', conditions=None):
+        assert columns == 'all' or isinstance(columns, list)
+
+        if columns == 'all':
+            self.table = table
+            columns = self.columns
+
         flat_columns = ', '.join(columns)
 
         if conditions:
