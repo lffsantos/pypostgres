@@ -14,7 +14,8 @@ class Postgres():
         pass
 
     def query(self, query, insertion=None, mode=['read', 'write']):
-        with Connection() as cursor:
+        with Connection() as session:
+            connection, cursor = session
             cursor.execute(query, insertion)
             if mode == 'read':
                 return cursor.fetchall()
