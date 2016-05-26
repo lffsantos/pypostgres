@@ -11,9 +11,8 @@ from utils import untuple
 
 class Postgres():
 
-    def __init__(self, table=None):
-        self.table = table
-        self.columns = get_table_columns(self.table) if table else None
+    def __init__(self):
+        pass
 
     def query(self, query, values=None, result=False):
         with Connection() as session:
@@ -23,8 +22,7 @@ class Postgres():
                 return cursor.fetchall()
         return
 
-    @staticmethod
-    def get_table_columns(table):
+    def get_table_columns(self, table):
         sql = "select column_name from information_schema.columns where table_name='{}';"
         columns = self.query(sql.format(table), result=True)
         return untuple(columns)
@@ -32,26 +30,24 @@ class Postgres():
     @staticmethod
     def build_dataframe(result_set, columns):
         df = pd.DataFrame(columns=columns)
-        for index, items in enumerate(result):
+        for index, items in enumerate(result_set):
             df.loc[index] = items
         return df
 
-    def to_dataframe(self, table, columns='all', conditions=None):
-        assert columns == 'all' or isinstance(columns, list)
-
-        if columns == 'all':
-            self.table = table
-            columns = self.columns
-
+    def to_dataframe(self, table, columns='*', conditions=None):
+        if columns == '*':
+            columns = self.get_table_columns(table)
+        
         flat_columns = ', '.join(columns)
 
-        if conditions:
-            query = "SELECT {} FROM {} WHERE {};".format(
-                flat_columns, table, conditions)
+        if not conditions:
+            sql = "SELECT {} FROM {};".format(
+                flat_columns, table)
         else:
-            query = "SELECT {} FROM {};".format(flat_columns, table)
+            sql = "SELECT {} FROM {} WHERE {};".format(
+                flat_columns, table, conditions)
 
-        result = self.query(query, result=True)
+        result = self.query(sql, result=True)
         return self.build_dataframe(result, columns)
         
 
