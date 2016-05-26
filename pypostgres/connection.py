@@ -5,7 +5,8 @@ import settings
 class Connection():
 
     def __init__(self):
-        pass
+        self.conn = None
+        self.cursor = None
 
     def __enter__(self, *args):
         self.conn = pg.connect(**settings.DATABASE)
