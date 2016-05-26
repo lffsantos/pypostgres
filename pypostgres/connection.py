@@ -10,7 +10,7 @@ class Connection():
     def __enter__(self, *args):
         self.conn = pg.connect(**settings.DATABASE)
         self.cursor = self.conn.cursor()
-        return self.cursor
+        return (self.conn, self.cursor)
 
     def __exit__(self, *args):
         try:
