@@ -4,9 +4,9 @@
 import pandas as pd
 from itertools import repeat
 
-from connection import Connection
-from utils import fix_int64
-from utils import untuple
+from pypostgres.connection import Connection
+from pypostgres.utils import fix_int64
+from pypostgres.utils import untuple
 
 
 class Postgres():
