@@ -17,7 +17,7 @@ class Postgres():
             'username': username,
             'password': password,
             'host': host,
-            'port: str(port)
+            'port': str(port)
         }
 
     def query(self, query, values=None, result=False):
