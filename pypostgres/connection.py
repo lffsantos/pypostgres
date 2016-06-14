@@ -4,12 +4,13 @@ import settings
 
 class Connection():
 
-    def __init__(self):
+    def __init__(self, settings):
+        self.settings = settings
         self.conn = None
         self.cursor = None
 
     def __enter__(self, *args):
-        self.conn = pg.connect(**settings.DATABASE)
+        self.conn = pg.connect(**self.settings)
         self.cursor = self.conn.cursor()
         return (self.conn, self.cursor)
 
