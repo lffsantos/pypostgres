@@ -11,11 +11,17 @@ from utils import untuple
 
 class Postgres():
 
-    def __init__(self):
-        pass
+    def __init__(self, dbname, username, password='', host='localhost', port=5432):
+        self.settings = {
+            'dbname': dbname,
+            'username': username,
+            'password': password,
+            'host': host,
+            'port: str(port)
+        }
 
     def query(self, query, values=None, result=False):
-        with Connection() as session:
+        with Connection(**self.settings) as session:
             connection, cursor = session
             cursor.execute(query, values)
             if result:
