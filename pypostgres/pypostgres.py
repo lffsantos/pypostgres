@@ -11,13 +11,13 @@ from pypostgres.utils import untuple
 
 class Postgres():
 
-    def __init__(self, dbname, username, password='', host='localhost', port=5432):
+    def __init__(self, database, user, password='', host='', port=''):
         self.settings = {
-            'dbname': dbname,
-            'username': username,
-            'password': password,
-            'host': host,
-            'port': str(port)
+            "database": database, 
+            "user": user, 
+            "password": password, 
+            "host": host, 
+            "port": port
         }
 
     def query(self, query, values=None, result=False):

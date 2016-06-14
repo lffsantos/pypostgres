@@ -1,11 +1,10 @@
 import psycopg2 as pg
-import settings
 
 
 class Connection():
 
-    def __init__(self, settings):
-        self.settings = settings
+    def __init__(self, **kwargs):
+        self.settings = kwargs
         self.conn = None
         self.cursor = None
 
