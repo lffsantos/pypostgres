@@ -1,75 +1,55 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import psycopg2 as pg
 import pandas as pd
 from itertools import repeat
-import numpy as np
 
-
-def fix_int64(data):
-    return (data if not isinstance(data, np.int64) else int(data))
-
-
-class Connection():
-
-    def __init__(self, database, user, password=None, host='localhost', port=5432):
-        self.config = {
-            "dbname": database,
-            "user": user,
-            "password": password,
-            "host": host,
-            "port": port
-        }
-
-    def __enter__(self, *args):
-        dsn = ("dbname={dbname} "
-            "user={user} " 
-            "password={password} " 
-            "host={host} " 
-            "port={port}").format_map(self.config)
-        self.conn = pg.connect(dsn)
-        self.cursor = self.conn.cursor()
-        return self.cursor
-
-    def __exit__(self, *args):
-        self.conn.commit()
-        self.cursor.close()
-        self.conn.close()
+from connection import Connection
+from utils import fix_int64
+from utils import untuple
 
 
 class Postgres():
 
-    def __init__(self, database, user, password=None, host='localhost', port=5432):
-        self.config = {
-            "dbname": database,
-            "user": user,
-            "password": password,
-            "host": host,
-            "port": port
-        }
+    def __init__(self):
+        pass
 
-    def query(self, query, insertion=None, mode=['read', 'write']):
-        with Connection(**self.config) as cursor:
-            cursor.execute(query, insertion)
-            if mode == 'read':
+    def query(self, query, values=None, result=False):
+        with Connection() as session:
+            connection, cursor = session
+            cursor.execute(query, values)
+            if result:
                 return cursor.fetchall()
         return
 
-    def to_dataframe(self, columns, table, conditions=None):
+    def get_table_columns(self, table):
+        sql = "select column_name from information_schema.columns where table_name='{}';"
+        columns = self.query(sql.format(table), result=True)
+        return untuple(columns)
+
+    @staticmethod
+    def build_dataframe(result_set, columns):
         df = pd.DataFrame(columns=columns)
-        columns = ', '.join(df.columns)
-
-        if conditions:
-            query = "SELECT {} FROM {} WHERE {};".format(
-                columns, table, conditions)
-        else:
-            query = "SELECT {} FROM {};".format(columns, table)
-
-        result = self.query(query, mode='read')
-        for index, items in enumerate(result):
+        for index, items in enumerate(result_set):
             df.loc[index] = items
         return df
+
+    def to_dataframe(self, table, columns='*', conditions=None):
+        if columns == '*':
+            columns = self.get_table_columns(table)
+        
+        flat_columns = ', '.join(columns)
+
+        if not conditions:
+            sql = "SELECT {} FROM {};".format(
+                flat_columns, table)
+        else:
+            sql = "SELECT {} FROM {} WHERE {};".format(
+                flat_columns, table, conditions)
+
+        result = self.query(sql, result=True)
+        return self.build_dataframe(result, columns)
+        
 
     def from_dataframe(self, df, table):
         columns = ', '.join(df.columns)
@@ -80,4 +60,4 @@ class Postgres():
             # Numpy.int64 is not supported by psycopg2 type conversion
             # row first element is the DataFrame index
             values = [fix_int64(el) for el in row[1:]]
-            self.query(query, values, mode='write')
+            self.query(query, values)
