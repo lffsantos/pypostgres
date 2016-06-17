@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-import pandas as pd
 from itertools import repeat
 
+import pandas as pd
+
 from pypostgres.connection import Connection
-from pypostgres.utils import fix_int64
-from pypostgres.utils import untuple
+from pypostgres.utils import fix_int64, untuple
+from pypostgres.utils import Result, Error
 
 
 class Postgres():
@@ -20,13 +21,19 @@ class Postgres():
             "port": port
         }
 
-    def query(self, query, values=None, result=False):
-        with Connection(**self.settings) as session:
-            connection, cursor = session
-            cursor.execute(query, values)
-            if result:
-                return cursor.fetchall()
-        return
+    def query(self, query, values=None):
+        with Connection(**self.settings) as (conn, cursor):
+            try:
+                cursor.execute(query, values)
+            except Exception as e:
+                return Result(False, Error(e, e.__class__.__name__, repr(e)))
+            else:
+                data = None
+                if query.upper().startswith('SELECT'):
+                    data = cursor.fetchall()
+                    if len(data) == 1 or all([len(el) == 1 for el in data]):
+                        data = untuple(data)
+                return Result(True, data)
 
     def get_table_columns(self, table):
         sql = "select column_name from information_schema.columns where table_name='{}';"
@@ -40,9 +47,11 @@ class Postgres():
             df.loc[index] = items
         return df
 
-    def to_dataframe(self, table, columns='*', conditions=None):
+    def select_to_df(self, table, columns='*', conditions=None):
         if columns == '*':
             columns = self.get_table_columns(table)
+        elif isinstance(columns, str):
+            columns = [columns]
         
         flat_columns = ', '.join(columns)
 
@@ -53,17 +62,21 @@ class Postgres():
             sql = "SELECT {} FROM {} WHERE {};".format(
                 flat_columns, table, conditions)
 
-        result = self.query(sql, result=True)
-        return self.build_dataframe(result, columns)
+        result = self.query(sql)
+        if result.success:
+            return self.build_dataframe(result.response, columns)
+        else:
+            raise result.response.exception
         
-
-    def from_dataframe(self, df, table):
+    def insert_from_df(self, df, table):
         columns = ', '.join(df.columns)
         placeholder = ', '.join(repeat('%s', len(df.columns)))
         query = "INSERT INTO {} ({}) VALUES ({})".format(
             table, columns, placeholder)
         for row in df.itertuples():
             # Numpy.int64 is not supported by psycopg2 type conversion
-            # row first element is the DataFrame index
+            # skipping row first element because it is the DataFrame index
             values = [fix_int64(el) for el in row[1:]]
-            self.query(query, values)
+            insertion = self.query(query, values)
+            if not insertion.success:
+                raise insertion.response.exception
