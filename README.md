@@ -36,7 +36,7 @@ Result(success=True, response=None)
 
 ```python
 # DataFrame query
->>> db.to_dataframe(['id', 'num', 'data'], 'dbname', conditions="num > 1")
+>>> db.select_to_df(['id', 'num', 'data'], 'dbname', conditions="num > 1")
 >>> 
     id    num       data
 0  2.0  100.0  "abc'def"
@@ -44,7 +44,7 @@ Result(success=True, response=None)
 # Inserting a DataFrame
 >>> import pandas as pd
 >>> df = pd.DataFrame([(3, 98, 'test')], columns=['id', 'num', 'data'])
->>> db.from_dataframe(df, 'dbname')
+>>> db.insert_from_df(df, 'dbname')
 Result(success=True, response=None)
 ```
 
