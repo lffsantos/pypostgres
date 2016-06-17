@@ -31,8 +31,6 @@ class Postgres():
                 data = None
                 if query.upper().startswith('SELECT'):
                     data = cursor.fetchall()
-                    if len(data) == 1 or all([len(el) == 1 for el in data]):
-                        data = untuple(data)
                 return Result(True, data)
 
     def get_table_columns(self, table):
