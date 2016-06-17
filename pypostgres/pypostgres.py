@@ -80,3 +80,4 @@ class Postgres():
             insertion = self.query(query, values)
             if not insertion.success:
                 raise insertion.response.exception
+        return Result(True, None)
