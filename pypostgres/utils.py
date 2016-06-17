@@ -1,4 +1,9 @@
 import numpy as np
+from collections import namedtuple
+
+
+Result = namedtuple('Result', ['success', 'response'])
+Error = namedtuple('Error', ['exception', 'name', 'description'])
 
 
 def fix_int64(data):

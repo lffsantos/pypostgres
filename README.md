@@ -2,28 +2,39 @@
 [![Build Status](https://travis-ci.org/marcelluzs/pypostgres.svg?branch=master)](https://travis-ci.org/marcelluzs/pypostgres)
 
 ```
-pip install pypostgres
+pip3 install pypostgres
 ```
 
 *Not tested in python 2.x*
 
-# Usage
+# Basic usage
 
 ```python
->>> from pypostgres import Postgres
+>>> from pypostgres.pypostgres import Postgres
 
 # Database connection
-# Params: database, user, password=None, host='localhost', port=5432
->>> db = Postgres('dbname', 'user',)
+'''
+    - database      Required
+    - user          Required
+    - password=''   (default: None)
+    - host=''       (default: 127.0.0.1 [localhost])
+    - port=''       (default: 5432)
+'''
+>>> db = Postgres('books', 'john')
 
-# Execute query
->>> db.query('SELECT * FROM dbname;', mode='read')
->>> [(1, 99, "def'abc"), (2, 100, "abc'def")]
+# Select query
+>>> db.query('SELECT author FROM books;')
+Result(success=True, response=[('George R. R. Martin',), ('J. R. R. Tolkien',)])
 
 # Insert query
->>> db.query('INSERT INTO dbname (a, b) VALUES (%s, %s);', (1, 2), mode='write')
-# return None
+>>> values = ('C. S. Lewis', 'The Chronicles of Narnia')
+>>> db.query('INSERT INTO books (author, book) VALUES (%s, %s);', values)
+Result(success=True, response=None)
+```
 
+# Handling Pandas Dataframes
+
+```python
 # DataFrame query
 >>> db.to_dataframe(['id', 'num', 'data'], 'dbname', conditions="num > 1")
 >>> 
@@ -34,5 +45,19 @@ pip install pypostgres
 >>> import pandas as pd
 >>> df = pd.DataFrame([(3, 98, 'test')], columns=['id', 'num', 'data'])
 >>> db.from_dataframe(df, 'dbname')
-# return None
+Result(success=True, response=None)
+```
+
+# Connection as `contextmanager`
+The Connection class handle the entrance and exit of the database connection, opening the communication when you entered it and closing the cursor/connection when you are out.
+
+```python
+>>> from pypostgres.pypostgres import Connection
+>>> dsn = 'dbname=books user=john'
+>>> with Connection(dsn=dsn) as (connection, cursor):
+>>>     # do whatever you want to do
+>>>     cursor.execute('SELECT author, book FROM books;')
+>>>     data = cursor.fetchone()
+>>> data
+('C. S. Lewis', 'The Chronicles of Narnia')
 ```

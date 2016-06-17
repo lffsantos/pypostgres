@@ -3,13 +3,14 @@ import psycopg2 as pg
 
 class Connection():
 
-    def __init__(self, **kwargs):
+    def __init__(self, dsn=None, **kwargs):
         self.settings = kwargs
+        self.dsn = dsn
         self.conn = None
         self.cursor = None
 
     def __enter__(self, *args):
-        self.conn = pg.connect(**self.settings)
+        self.conn = pg.connect(self.dsn) if self.dsn else pg.connect(**self.settings)
         self.cursor = self.conn.cursor()
         return (self.conn, self.cursor)
 
