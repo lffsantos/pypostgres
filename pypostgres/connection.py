@@ -1,15 +1,15 @@
 import psycopg2 as pg
-import settings
 
 
 class Connection():
 
-    def __init__(self):
+    def __init__(self, **kwargs):
+        self.settings = kwargs
         self.conn = None
         self.cursor = None
 
     def __enter__(self, *args):
-        self.conn = pg.connect(**settings.DATABASE)
+        self.conn = pg.connect(**self.settings)
         self.cursor = self.conn.cursor()
         return (self.conn, self.cursor)
 

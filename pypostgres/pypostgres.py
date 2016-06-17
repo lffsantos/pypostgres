@@ -4,18 +4,24 @@
 import pandas as pd
 from itertools import repeat
 
-from connection import Connection
-from utils import fix_int64
-from utils import untuple
+from pypostgres.connection import Connection
+from pypostgres.utils import fix_int64
+from pypostgres.utils import untuple
 
 
 class Postgres():
 
-    def __init__(self):
-        pass
+    def __init__(self, database, user, password='', host='', port=''):
+        self.settings = {
+            "database": database, 
+            "user": user, 
+            "password": password, 
+            "host": host, 
+            "port": port
+        }
 
     def query(self, query, values=None, result=False):
-        with Connection() as session:
+        with Connection(**self.settings) as session:
             connection, cursor = session
             cursor.execute(query, values)
             if result:
