@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+#
+#   PyPostgres
+#   Marcellus Amadeus
+#
+
+# third-party
 import psycopg2 as pg
 
 
@@ -12,7 +19,7 @@ class Connection():
     def __enter__(self, *args):
         self.conn = pg.connect(self.dsn) if self.dsn else pg.connect(**self.settings)
         self.cursor = self.conn.cursor()
-        return (self.conn, self.cursor)
+        return self.conn, self.cursor
 
     def __exit__(self, *args):
         try:
