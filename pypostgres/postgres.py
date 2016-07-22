@@ -8,7 +8,6 @@
 from itertools import repeat
 
 # third-party
-import pandas as pd
 import psycopg2 as pg
 
 # local
@@ -81,45 +80,3 @@ class Postgres():
         sql = "SELECT column_name FROM information_schema.columns WHERE table_name=%s;"
         result = self.query(sql, values=(table,), fetch='all')
         return result.response
-
-    @staticmethod
-    def build_dataframe(result_set, columns):
-        df = pd.DataFrame(columns=columns)
-        for index, items in enumerate(result_set):
-            df.loc[index] = items
-        return df
-
-    def select_to_df(self, table, columns='*', conditions=None):
-        if columns == '*':
-            columns = self.get_table_columns(table)
-        elif isinstance(columns, str):
-            columns = [columns]
-        
-        flat_columns = ', '.join(columns)
-
-        if not conditions:
-            sql = "SELECT {} FROM {};".format(
-                flat_columns, table)
-        else:
-            sql = "SELECT {} FROM {} WHERE {};".format(
-                flat_columns, table, conditions)
-
-        result = self.query(sql, fetch=0)
-        if result.success:
-            return self.build_dataframe(result.response, columns)
-        else:
-            raise result.response.exception
-        
-    def insert_from_df(self, df, table):
-        columns = ', '.join(df.columns)
-        placeholder = ', '.join(repeat('%s', len(df.columns)))
-        query = "INSERT INTO {} ({}) VALUES ({})".format(
-            table, columns, placeholder)
-        for row in df.itertuples():
-            # Numpy.int64 is not supported by psycopg2 type conversion
-            # skipping row first element because it is the DataFrame index
-            values = [fix_int64(el) for el in row[1:]]
-            insertion = self.query(query, values)
-            if not insertion.success:
-                raise insertion.response.exception
-        return Result(True, None)
