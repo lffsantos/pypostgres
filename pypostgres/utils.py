@@ -7,17 +7,9 @@
 # stdlib
 from collections import namedtuple
 
-# third-party
-import numpy as np
-
 
 Result = namedtuple('Result', ['success', 'response'])
 Error = namedtuple('Error', ['exception', 'name'])
-
-
-def fix_int64(value):
-    '''Replace numpy.int64 value for Python default int.'''
-    return value if not isinstance(value, np.int64) else int(value)
 
 
 def is_nested(values):
