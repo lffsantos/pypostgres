@@ -4,15 +4,11 @@
 #   Marcellus Amadeus
 #
 
-# stdlib
-from itertools import repeat
-
 # third-party
 import psycopg2 as pg
 
 # local
 from pypostgres.connection import Connection
-from pypostgres.utils import fix_int64
 from pypostgres.utils import is_nested
 from pypostgres.utils import Error
 from pypostgres.utils import Result
