@@ -37,9 +37,6 @@ class Postgres():
     def query(self, sql, values=None, fetch=1):
 
         with Connection(**self.settings) as (_, cursor):
-            assert (values is None 
-                    or isinstance(values, tuple)
-                    or isinstance(values, list)), 'Invalid values type: {}'.format(type(values))
             if self.debug:
                 print(cursor.mogrify(sql, values))
             try:
