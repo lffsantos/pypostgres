@@ -13,5 +13,6 @@ Error = namedtuple('Error', ['exception', 'name'])
 
 
 def is_nested(values):
-    '''Check whether given values have lists of lists (or tuples of tuples)'''
-    return all([(isinstance(el, list) or isinstance(el, tuple)) for el in values])
+    '''Check whether given values contain nested elements.'''
+    flat_types = (str, int, bool, float)
+    return not all(any(isinstance(el, t) for t in flat_types) for el in values)
