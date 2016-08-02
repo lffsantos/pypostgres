@@ -8,7 +8,7 @@
 import psycopg2 as pg
 
 
-class Connection():
+class Connection(object):
 
     def __init__(self, dsn=None, **kwargs):
         self.settings = kwargs

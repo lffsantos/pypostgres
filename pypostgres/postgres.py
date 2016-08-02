@@ -14,7 +14,7 @@ from pypostgres.utils import Error
 from pypostgres.utils import Result
 
 
-class Postgres():
+class Postgres(object):
 
     def __init__(self, database, user, password='', host='', port='', debug=False):
         self.settings = {
