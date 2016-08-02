@@ -10,7 +10,7 @@ pip3 install pypostgres
 # Basic usage
 
 ```python
->>> from pypostgres.pypostgres import Postgres
+>>> from pypostgres.postgres import Postgres
 
 # Database connection
 '''
@@ -22,37 +22,26 @@ pip3 install pypostgres
 '''
 >>> db = Postgres('books', 'john')
 
-# Select query
->>> db.query('SELECT author FROM books;')
-Result(success=True, response=[('George R. R. Martin',), ('J. R. R. Tolkien',)])
+## Select query
+# Fetch argument can be:
+#   'all' or 0 for `fetchall`
+#   'one' or 1 for `fetchone`
+#   an int for `fetchmany`
+>>> db.query('SELECT author FROM books;', fetch='all')
+Result(success=True, response=['George R. R. Martin', 'J. R. R. Tolkien'])
 
-# Insert query
+## Insert query
 >>> values = ('C. S. Lewis', 'The Chronicles of Narnia')
->>> db.query('INSERT INTO books (author, book) VALUES (%s, %s);', values)
+>>> db.query('INSERT INTO books (author, book) VALUES (%s, %s);', values=values)
 Result(success=True, response=None)
 ```
 
-# Handling Pandas Dataframes
-
-```python
-# DataFrame query
->>> db.select_to_df(['id', 'num', 'data'], 'dbname', conditions="num > 1")
->>> 
-    id    num       data
-0  2.0  100.0  "abc'def"
-
-# Inserting a DataFrame
->>> import pandas as pd
->>> df = pd.DataFrame([(3, 98, 'test')], columns=['id', 'num', 'data'])
->>> db.insert_from_df(df, 'dbname')
-Result(success=True, response=None)
-```
 
 # Connection as `contextmanager`
 The Connection class handle the entrance and exit of the database connection, opening the communication when you entered it and closing the cursor/connection when you are out.
 
 ```python
->>> from pypostgres.pypostgres import Connection
+>>> from pypostgres.connection import Connection
 >>> dsn = 'dbname=books user=john'
 >>> with Connection(dsn=dsn) as (connection, cursor):
 >>>     # do whatever you want to do

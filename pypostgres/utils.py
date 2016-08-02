@@ -1,17 +1,18 @@
-import numpy as np
+#!/usr/bin/env python3
+#
+#   PyPostgres
+#   Marcellus Amadeus
+#
+
+# stdlib
 from collections import namedtuple
 
 
 Result = namedtuple('Result', ['success', 'response'])
-Error = namedtuple('Error', ['exception', 'name', 'description'])
+Error = namedtuple('Error', ['exception', 'name'])
 
 
-def fix_int64(data):
-    return (data if not isinstance(data, np.int64) else int(data))
-
-
-def untuple(list_of_tuples, index=0):
-    result = []
-    for t in list_of_tuples:
-        result.append(t[index])
-    return result
+def is_nested(values):
+    '''Check whether given values contain nested elements.'''
+    flat_types = (str, int, bool, float)
+    return not all(any(isinstance(el, t) for t in flat_types) for el in values)
