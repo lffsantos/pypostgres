@@ -61,7 +61,7 @@ class Postgres(object):
                     # there is nothing to fetch
                     pass
             if data and len(data) == 1:
-                    data = data[0]
+                data = data[0]
             return Result(True, data)
 
     def get_table_columns(self, table):
