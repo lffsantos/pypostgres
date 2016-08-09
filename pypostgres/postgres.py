@@ -18,10 +18,10 @@ class Postgres(object):
 
     def __init__(self, database, user, password='', host='', port='', debug=False):
         self.settings = {
-            "database": database, 
-            "user": user, 
-            "password": password, 
-            "host": host, 
+            "database": database,
+            "user": user,
+            "password": password,
+            "host": host,
             "port": port
         }
         self.debug = debug
@@ -35,7 +35,6 @@ class Postgres(object):
                          database=self.settings["database"])
 
     def query(self, sql, values=None, fetch=1):
-
         with Connection(**self.settings) as (_, cursor):
             if self.debug:
                 print(cursor.mogrify(sql, values))
@@ -62,8 +61,7 @@ class Postgres(object):
                     # there is nothing to fetch
                     pass
             if data:
-                if (is_nested(data) and
-                    all([len(row) == 1 for row in data])):
+                if is_nested(data) and all([len(row) == 1 for row in data]):
                     data = [row[0] for row in data]
                 if len(data) == 1:
                     data = data[0]
