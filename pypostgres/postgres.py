@@ -61,7 +61,8 @@ class Postgres(object):
                     # there is nothing to fetch
                     pass
             if data:
-                if len(list(data)) == 1:
+                data = list(data)
+                if len(data) == 1:
                     data = data[0]
                 elif is_nested(data) and all([len(row) == 1 for row in data]):
                     data = [row[0] for row in data]
