@@ -51,7 +51,7 @@ class Postgres(object):
             data = None
             if fetch is not None:
                 try:
-                    if fetch == 0 or fetch == 'all':
+                    if fetch == 0 or fetch == 'all' or fetch == '*':
                         data = cursor.fetchall()
                     elif fetch == 1 or fetch == 'one':
                         data = cursor.fetchone()
