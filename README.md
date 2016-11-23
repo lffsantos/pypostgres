@@ -47,6 +47,34 @@ Just pass how many result you want e.g. `.fetch(n)`:
 2. `0`, `*` or `all` for all
 3. An *int* for other values
 
+# Cursor factory
+I consider the task of handling fechted data very important so I gave a special attention to *cursor factory*.
+
+All Postgres class methods (except `.mogrify()`) accept a `cursor_factory` param that handle the desired cursor factory. For each type of cursor factory you can pass different things to get the same factory, see below.
+
+# Namedtuple
+For namedtuple results, you can pass:
+
+1. 'NamedTuple', str
+2. 'NamedTupleCursor', str
+3. namedtuple, function from *collections*
+4. psycopg2.extras.NamedTupleCursor, the actual cursor factory
+
+# Dict
+For dict results, you can pass:
+
+1. 'Dict', str
+2. 'Dictursor', str
+3. dict, type
+4. psycopg2.extras.DictCursor, the actual cursor factory
+
+# RealDict
+For [RealDict](http://initd.org/psycopg/docs/extras.html#real-dictionary-cursor "psycopg2.extras.RealDictCursor") results, you can pass:
+
+1. 'RealDict', str
+2. 'RealDictursor', str
+3. psycopg2.extras.RealDictCursor, the actual cursor factory
+
 # Connection class as `contextmanager`
 The Connection class handle the entrance and exit of the database connection, opening the communication when you entered it and closing the connection when you are out.
 
