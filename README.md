@@ -8,7 +8,8 @@ pip3 install pypostgres
 *Not tested in python 2.x*
 
 # Basic usage
-Just connect to your db using Postgres class and pass the queries to `.query()` method. 
+Just connect to your db using Postgres class and pass the queries to `.query()` method.
+
 The `.query()` method will return a custom `Cursor` class, if you don't want nothing back from the db, you don't need to store it but if you want to fetch any data, you can do it whenever you want because the `Cursor` class will always handle the real connection with the db. In other words you will never need to worry about closed cursors or connections because only at the exact time you request data from db the `Cursor` class opens the connection and then it closes it.
 
 ```python
@@ -52,7 +53,7 @@ I consider the task of handling fechted data very important so I gave a special 
 
 All Postgres class methods (except `.mogrify()`) accept a `cursor_factory` param that handle the desired cursor factory. For each type of cursor factory you can pass different things to get the same factory, see below.
 
-# Namedtuple
+## Namedtuple
 For namedtuple results, you can pass:
 
 1. 'NamedTuple', str
@@ -60,7 +61,7 @@ For namedtuple results, you can pass:
 3. namedtuple, function from *collections*
 4. psycopg2.extras.NamedTupleCursor, the actual cursor factory
 
-# Dict
+## Dict
 For dict results, you can pass:
 
 1. 'Dict', str
@@ -68,7 +69,7 @@ For dict results, you can pass:
 3. dict, type
 4. psycopg2.extras.DictCursor, the actual cursor factory
 
-# RealDict
+## RealDict
 For [RealDict](http://initd.org/psycopg/docs/extras.html#real-dictionary-cursor "psycopg2.extras.RealDictCursor") results, you can pass:
 
 1. 'RealDict', str
