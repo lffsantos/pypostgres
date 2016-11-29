@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 # coding=utf-8
-#
-#   Python Script
-#
-#   Copyright © Manoel Vilela
-#
-#
 
 from setuptools import setup, find_packages
 from codecs import open  # To use a consistent encoding
