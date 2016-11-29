@@ -14,4 +14,9 @@ class Connection(object):
         return self.conn
 
     def __exit__(self, *args):
-        self.conn.close()
+        try:
+            self.conn.commit()
+        except:
+            self.conn.rollback()
+        finally:
+            self.conn.close()
