@@ -14,16 +14,16 @@ class Cursor(object):
         self.sql = sql
         self.values = values
         self.cursor_factory = cursor_factory
-        if self.values:
-            # passing values means insertion therefore
-            # there is no need to wait until fetch
-            self.fetch()
+        self.fetch()
+
+    def __repr__(self):
+        return '<Cursor (%s, %s)>' % (self.sql, self.values)
 
     def fetch(self, size=None):
-        '''Execute SQL statements given (alongside optional values) and fetch the result
+        '''Execute SQL statements and fetch the result
 
-        :param size: fetch size, None (default) means there is not need to fetch anything
-        :type size: int or None (default)
+        :param size: fetch size
+        :type size: int
         '''
         with self.connection as conn:
             with conn.cursor(cursor_factory=self.cursor_factory) as cursor:
@@ -38,8 +38,7 @@ class Cursor(object):
                         return cursor.fetchone()
                     elif size in [0, '*', 'all']:
                         return cursor.fetchall()
-                    else:
-                        return cursor.fetchmany(size)
+                    return cursor.fetchmany(size)
 
     @property
     def all(self):
