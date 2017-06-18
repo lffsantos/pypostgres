@@ -7,7 +7,6 @@ logger = logging.getLogger(__name__)
 
 
 class Connection(object):
-
     def __init__(self, **kwargs):
         self.settings = kwargs
         self.conn = None

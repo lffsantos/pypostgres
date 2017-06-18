@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class Postgres(object):
-
     def __init__(self, **kwargs):
         self.settings = kwargs
 
@@ -19,10 +18,11 @@ class Postgres(object):
             with conn.cursor() as cursor:
                 return cursor.mogrify(sql, values)
 
-    def query(self, sql, values=None, cursor_factory=None):
+    def query(self, sql, values=None, cursor_factory=None, fetch_size=None):
         factory = get_cursor_factory(cursor_factory)
         logger.info('Query: "%s"' % self.mogrify(sql, values))
-        return Cursor(Connection(**self.settings), sql, values, factory)
+        return Cursor(Connection(**self.settings),
+                      sql, values, factory, fetch_size)
 
     def get_columns(self, table, cursor_factory=None):
         sql = ("SELECT column_name FROM information_schema.columns "
