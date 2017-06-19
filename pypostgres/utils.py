@@ -9,10 +9,12 @@ def is_nested(values):
 
 
 def get_cursor_factory(factory):
-    if factory.lower() in ('namedtuple',
-                           'namedtuplecursor',
-                           namedtuple,
-                           extras.NamedTupleCursor):
+    if factory is None:
+        return
+    elif factory.lower() in ('namedtuple',
+                             'namedtuplecursor',
+                             namedtuple,
+                             extras.NamedTupleCursor):
         return extras.NamedTupleCursor
     elif factory.lower() in ('dict',
                              'dictcursor',
@@ -21,5 +23,4 @@ def get_cursor_factory(factory):
                              dict,
                              extras.RealDictCursor):
         return extras.RealDictCursor
-    return (TypeError('Unknown factory: %s' % factory)
-            if factory is not None else None)
+    return TypeError('Unknown factory: %s' % factory)
