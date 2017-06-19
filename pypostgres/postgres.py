@@ -3,7 +3,7 @@ import logging
 
 from pypostgres.connection import Connection
 from pypostgres.cursor import Cursor
-from pypostgres.utils import get_cursor_factory
+from pypostgres.utils import get_cursor_factory, is_nested
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -16,7 +16,10 @@ class Postgres(object):
     def mogrify(self, sql, values):
         with Connection(**self.settings) as conn:
             with conn.cursor() as cursor:
-                return cursor.mogrify(sql, values)
+                if not is_nested(values):
+                    return cursor.mogrify(sql, values)
+                logging.warning('Nested values, only mogrifying the first')
+                return cursor.mogrify(sql, values[0])
 
     def query(self, sql, values=None, cursor_factory=None, fetch_size=None):
         factory = get_cursor_factory(cursor_factory)
