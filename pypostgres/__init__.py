@@ -4,7 +4,7 @@
 #   Marcellus Amadeus
 #
 
-__version__ = '0.8.1'
+__version__ = '0.8.2'
 __author__ = 'Marcellus Amadeus'
 __email__ = 'marcellus@nexusedge.co'
-__url__ = 'https://www.github.com/marcelluz/pypostgres'
+__url__ = 'https://www.github.com/marcelluzs/pypostgres'

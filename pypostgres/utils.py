@@ -5,7 +5,8 @@ from psycopg2 import extras
 
 def is_nested(values):
     '''Check if values is composed only by iterable elements.'''
-    return all(isinstance(item, Iterable) for item in values)
+    return (all(isinstance(item, Iterable) for item in values)
+            if isinstance(values, Iterable) else False)
 
 
 def get_cursor_factory(factory):
