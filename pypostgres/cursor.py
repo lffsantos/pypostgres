@@ -10,12 +10,11 @@ class Cursor(object):
         self.values = values
         self.cursor_factory = cursor_factory
         self.fetch_size = fetch_size
-        self.commit()
 
     def __repr__(self):
         return '<Cursor (%s, %s)>' % (self.sql, self.values)
 
-    def commit(self):
+    def fetch(self, size=0, fetch=True):
         with self.connection as conn:
             with conn.cursor() as cursor:
                 if self.values is not None:
@@ -23,31 +22,27 @@ class Cursor(object):
                         cursor.executemany(self.sql, self.values)
                     else:
                         cursor.execute(self.sql, self.values)
-                if self.fetch_size is not None:
-                    return self.fetch(self.fetch_size)
-
-    def fetch(self, size, cursor):
-        if size in (1, 'one'):
-            return cursor.fetchone()
-        elif size in (0, '*', 'all'):
-            return cursor.fetchall()
-        elif isinstance(size, int):
-            return cursor.fetchmany(size)
-        return TypeError('Inappropriate size type: %s' % type(size))
+                else:
+                    cursor.execute(self.sql)
+                if size is not None and fetch:
+                    if size in (1, 'one'):
+                        return cursor.fetchone()
+                    elif size in (0, '*', 'all'):
+                        return cursor.fetchall()
+                    elif isinstance(size, int):
+                        return cursor.fetchmany(size)
+                    return TypeError('Inappropriate size type: %s' % type(size))
 
     @property
     def all(self):
-        with self.connection as conn:
-            with conn.cursor() as cursor:
-                return self.fetch(0, cursor)
+        return self.fetch(0)
 
     @property
     def one(self):
-        with self.connection as conn:
-            with conn.cursor() as cursor:
-                return self.fetch(1, cursor)
+        return self.fetch(1)
 
     def many(self, size):
-        with self.connection as conn:
-            with conn.cursor() as cursor:
-                return self.fetch(size, cursor)
+        return self.fetch(size)
+
+    def commit(self, fetch=False):
+        return self.fetch(1, fetch=fetch)
