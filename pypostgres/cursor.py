@@ -10,11 +10,12 @@ class Cursor(object):
         self.values = values
         self.cursor_factory = cursor_factory
         self.fetch_size = fetch_size
+        self.pk = self.fetch(fetch_size) if values else None
 
     def __repr__(self):
         return '<Cursor (%s, %s)>' % (self.sql, self.values)
 
-    def fetch(self, size=0, fetch=True):
+    def fetch(self, size=None):
         with self.connection as conn:
             with conn.cursor() as cursor:
                 if self.values is not None:
@@ -24,7 +25,7 @@ class Cursor(object):
                         cursor.execute(self.sql, self.values)
                 else:
                     cursor.execute(self.sql)
-                if size is not None and fetch:
+                if size is not None:
                     if size in (1, 'one'):
                         return cursor.fetchone()
                     elif size in (0, '*', 'all'):
@@ -44,5 +45,5 @@ class Cursor(object):
     def many(self, size):
         return self.fetch(size)
 
-    def commit(self, fetch=False):
-        return self.fetch(1, fetch=fetch)
+    def commit(self):
+        self.pk = self.fetch(self.fetch_size) if self.fetch_size else self.fetch()
