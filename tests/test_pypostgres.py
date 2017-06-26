@@ -1,8 +1,7 @@
 import psycopg2
-from pypostgres.cursor import Cursor
 import pytest
 import testing.postgresql
-
+from pypostgres.cursor import Cursor
 from pypostgres.postgres import Postgres
 
 
@@ -45,8 +44,6 @@ def test_insert_one_return_pk(fake_database):
     assert query.pk[0] == 1
 
 
-
-
 def test_insert_one_without_values_using_commit(fake_database):
     db = Postgres(**fake_database)
     query = db.query(
@@ -81,6 +78,7 @@ def test_insert_bulk(fake_database, values, expected_count):
     db.query(sql=sql, values=values)
     query_test = db.query("select count(*) from test")
     assert query_test.one[0] == expected_count
+
 
 @pytest.mark.parametrize('values, return_id', [
     [[(i,  'insert '+ str(i))for i in range(1, 4)], 1],
